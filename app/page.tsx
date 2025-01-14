@@ -1,8 +1,53 @@
-import Image from "next/image";
-import QuestionMarkIcon from "./components/icons/questionMarkIcon";
-import Button from "./components/atoms/Button";
+'use client';
+
+import { useState , useRef } from 'react';
+import QuestionMarkIcon from './components/icons/questionMarkIcon';
+import Button from './components/atoms/Button';
 
 export default function Home() {
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [dragActive, setDragActive] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      if (file.type === 'text/csv') {
+        setSelectedFile(file);
+      } else {
+        alert('Please select a valid CSV file.');
+      }
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setDragActive(true);
+  };
+
+  const handleDragLeave = () => {
+    setDragActive(false);
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setDragActive(false);
+    const file = e.dataTransfer.files[0];
+    if (file && file.type === 'text/csv') {
+      setSelectedFile(file);
+    } else {
+      alert('Please upload a valid CSV file.');
+    }
+  };
+
+  const handleNext = () => {
+    if (selectedFile) {
+      console.log('File uploaded:', selectedFile.name);
+    } else {
+      alert('Please upload a file before proceeding.');
+    }
+  };
+
   return (
     <>
       <nav className="flex items-center justify-between p-8 py-4 border-b-[1px] border-gray-200">
@@ -21,15 +66,33 @@ export default function Home() {
             in Grafana. This can help you better understand your data and
             fitness goals.
           </p>
-          <div className="flex flex-col py-20  border-dashed rounded-lg border-4 border-gray-400 w-full items-center">
+          <div
+            className={`flex flex-col py-20 border-dashed rounded-lg border-4 ${
+              dragActive ? 'border-blue-400' : 'border-gray-400'
+            } w-full items-center`}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+          >
             <p className="text-lg font-bold">Drag and Drop or</p>
             <p>select a CSV file from your computer.</p>
-           <Button>
-             Browse Files
-           </Button>
+            <label htmlFor="fileInput">
+              <input
+                type="file"
+                accept=".csv"
+                id="fileInput"
+                className="hidden"
+                onChange={handleFileChange}
+                ref={fileInputRef}
+              />
+              <Button onClick={() => fileInputRef.current?.click()}>Browse Files</Button>
+            </label>
           </div>
           <div className="w-full flex justify-end">
-            <Button className="bg-sky-500 hover:bg-sky-300 hover:text-gray-100 text-white">
+            <Button
+              className="bg-sky-500 hover:bg-sky-300 hover:text-gray-100 text-white"
+              onClick={handleNext}
+            >
               Next
             </Button>
           </div>
