@@ -1,0 +1,33 @@
+datasource db {
+    url = env("DATABASE_URL")
+    provider =  "postgresql"
+}
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+model FoodLog {
+    id Int @id @default(autoincrement())
+    Date DateTime
+    Entry String
+    Item String
+    Amount String
+    Calories Int
+    Carbs String
+    Fat Int
+    Protein Int
+    Cholest Int
+    Sodium Int
+    Sugar Int
+    reportId String? 
+    Report Report? @relation(fields: [reportId] , references: [id])
+
+    @@index([reportId])
+}
+
+model Report {
+    id String @id
+    FoodLogs FoodLog[]
+}
+
