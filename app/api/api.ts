@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { Axios, AxiosResponse } from "axios";
 
 
 const apiClient = axios.create({
@@ -6,7 +6,7 @@ const apiClient = axios.create({
 });
 
 
-export function postCSVData(data: FormData) {
+export function postCSVData(data: FormData) : Promise<AxiosResponse> {
   return apiClient.post("/upload", data, {
     headers: {
       "Content-Type": "multipart/form-data", 

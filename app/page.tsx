@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import { useState, useRef } from "react";
 import QuestionMarkIcon from "./components/icons/questionMarkIcon";
@@ -42,12 +42,15 @@ export default function Home() {
     }
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (selectedFile) {
       console.log("File uploaded:", selectedFile.name);
       const formData = new FormData();
       formData.append('file', selectedFile);
-      postCSVData(formData);
+      const response = await postCSVData(formData);
+      if (response.status === 200){
+        alert("Data Uploaded Successfully")
+      }
     } else {
       alert("Please upload a file before proceeding.");
     }

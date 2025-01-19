@@ -9,17 +9,18 @@ generator client {
 
 model FoodLog {
     id Int @id @default(autoincrement())
-    Date DateTime
-    Entry String
-    Item String
-    Amount String
-    Calories Int
-    Carbs String
-    Fat Int
-    Protein Int
-    Cholest Int
-    Sodium Int
-    Sugar Int
+    Date DateTime?
+    Entry String?
+    Item String?
+    Amount String?
+    Calories Float?
+    Carbs Float?
+    Fat Float?
+    Protein Float?
+    Cholest Float?
+    Sodium Float?
+    Sugar Float?
+    Fiber Float?
     reportId String? 
     Report Report? @relation(fields: [reportId] , references: [id])
 
