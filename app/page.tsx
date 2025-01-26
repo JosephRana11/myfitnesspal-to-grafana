@@ -1,15 +1,18 @@
 "use client"
 
 import { useState, useRef } from "react";
-import QuestionMarkIcon from "./components/icons/questionMarkIcon";
-import Button from "./components/atoms/Button";
-import FileRightIcon from "./components/icons/fileRightIcon";
+import QuestionMarkIcon from "../components/icons/questionMarkIcon";
+import Button from "../components/atoms/Button";
+import FileRightIcon from "../components/icons/fileRightIcon";
 import { postCSVData } from "./api/api";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [dragActive, setDragActive] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const router = useRouter()
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -49,7 +52,7 @@ export default function Home() {
       formData.append('file', selectedFile);
       const response = await postCSVData(formData);
       if (response.status === 200){
-        alert("Data Uploaded Successfully")
+        router.push(`/report/${response.data.reportID}/`)
       }
     } else {
       alert("Please upload a file before proceeding.");

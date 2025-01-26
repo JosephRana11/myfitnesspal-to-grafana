@@ -12,19 +12,19 @@ export async function POST(request: Request) {
   if (file === null) {
     return NextResponse.json({ message: "No file found" }, { status: 400 });
   }
-  await ReadFileContent(file as File)
-  return NextResponse.json({ message: "File uploaded successfully"},{status :200})
+  const reportID =  await ReadFileContent(file as File)
+  return NextResponse.json({ message: "File uploaded successfully" , reportID : reportID},{status :200})
 }
 
 
-export async function ReadFileContent(file: File) {
+export async function ReadFileContent(file: File) : Promise<string> {
     const text = await file.text();
     const lines = text.split('\n');
 
-    const reportId = randomUUID()
+    const reportID = randomUUID()
     await prisma.report.create({
       data: {
-        id: reportId
+        id: reportID
       }
     })
 
@@ -39,8 +39,8 @@ export async function ReadFileContent(file: File) {
       const carbs = parseFloat(data[6]);  
       const fat = parseFloat(data[7]);  
       const protein = parseFloat(data[8]);  
-      const cholest = parseFloat(data[9]);  
-      const sodium = parseFloat(data[10]);  
+      const cholest = parseFloat(data[9])/1000;  
+      const sodium = parseFloat(data[10])/1000;  
       const sugar = parseFloat(data[11]); 
       const fiber = parseFloat(data[12]); 
       
@@ -60,12 +60,9 @@ export async function ReadFileContent(file: File) {
         Fiber: fiber,
         reportId: null  
       };
-
-      console.log(date , new Date())
-
       const response = await prisma.foodLog.create({
         data: {
-          Date: new Date(),
+          Date: date,
           Entry: foodLog.Entry,
           Item: foodLog.Item,
           Amount: foodLog.Amount,
@@ -77,10 +74,9 @@ export async function ReadFileContent(file: File) {
           Sodium: foodLog.Sodium,
           Sugar: foodLog.Sugar,
           Fiber: foodLog.Fiber,
-          reportId: reportId
+          reportId: reportID
         }
       })
-      console.log(response)
     }
-
+    return reportID
 }
