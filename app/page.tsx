@@ -6,6 +6,8 @@ import Button from "../components/atoms/Button";
 import FileRightIcon from "../components/icons/fileRightIcon";
 import { postCSVData } from "./api/api";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+import { cn } from "@/utils/cn";
 
 export default function Home() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -20,7 +22,7 @@ export default function Home() {
       if (file.type === "text/csv") {
         setSelectedFile(file);
       } else {
-        alert("Please select a valid CSV file.");
+        toast.error("Please select a valid CSV file.");
       }
     }
   };
@@ -41,7 +43,7 @@ export default function Home() {
     if (file && file.type === "text/csv") {
       setSelectedFile(file);
     } else {
-      alert("Please upload a valid CSV file.");
+      toast.error("Please upload a valid CSV file.");
     }
   };
 
@@ -52,10 +54,12 @@ export default function Home() {
       formData.append('file', selectedFile);
       const response = await postCSVData(formData);
       if (response.status === 200){
+        toast.success('Successfully Generated Report! Redirecting you now.')
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         router.push(`/report/${response.data.reportID}/`)
       }
     } else {
-      alert("Please upload a file before proceeding.");
+      toast.error("Please upload a file before proceeding.");
     }
   };
 
@@ -112,7 +116,7 @@ export default function Home() {
           </div>
           <div className="w-full flex justify-end">
             <Button
-              className="bg-sky-500 hover:bg-sky-300 hover:text-gray-100 text-white"
+              className={cn("bg-sky-500 hover:bg-sky-300 hover:text-gray-100 text-white" , !selectedFile && "opacity-50")}
               onClick={handleNext}
               disabled={!selectedFile}
             >

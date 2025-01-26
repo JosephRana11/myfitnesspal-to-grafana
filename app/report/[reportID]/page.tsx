@@ -1,6 +1,5 @@
-// "use client"
+"use client"
 
-'use client'
 import { environment } from "../../api/environment";
 import { useParams } from "next/navigation";
 
