@@ -1,36 +1,50 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MyFitnessPal to Grafana
 
-## Getting Started
+**Easily visualize your MyFitnessPal data with the power of Grafana.**
 
-First, run the development server:
+<figure>
+  <img src="./public/demo.gif" alt="Demo GIF" />
+</figure>
+
+This project is built using **Next.js 15** to provide seamless integration between MyFitnessPal and Grafana for better data visualization.
+
+## Features
+
+- Visualize workout and nutrition data on customizable Grafana dashboards
+- Easy setup and configuration with environment variables
+
+## Installation & Running the Project
+
+To get started, clone the repository and install the dependencies:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <repository-url>
+cd <project-folder>
+yarn install
 ```
+Once the dependencies are installed, run the development server:
+````
+yarn dev
+````
+The application will be running at http://localhost:3000.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**Note**:Make sure the grafana instance and database are also running
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Configuration
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Learn More
+- DATABASE_URL
+- NEXT_PUBLIC_GRAFANA_DASHBOARD_URL
 
-To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Ensure your Grafana instance is configured to allow embedding. Update the Grafana .ini file with the following settings:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Allow embedding in your Grafana settings:
 
-## Deploy on Vercel
+    Open the grafana.ini file (usually located at /etc/grafana/grafana.ini).
+    Under [security], set allow_embedding = true.
+    cookie_samesite = none
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Configure your Grafana dashboard for API access:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+    Make sure your Grafana instance is properly set up to allow API access for embedding and data visualization.
