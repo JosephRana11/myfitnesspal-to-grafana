@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useState, useRef } from "react";
 import QuestionMarkIcon from "../components/icons/questionMarkIcon";
@@ -8,13 +8,15 @@ import { postCSVData } from "./api/api";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { cn } from "@/utils/cn";
+import LoadIcon from "@/components/icons/loadIcon";
 
 export default function Home() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [dragActive, setDragActive] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [isPosting, setIsPosting] = useState<boolean>(false);
 
-  const router = useRouter()
+  const router = useRouter();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -48,19 +50,22 @@ export default function Home() {
   };
 
   const handleNext = async () => {
+    setIsPosting(true)
     if (selectedFile) {
       console.log("File uploaded:", selectedFile.name);
       const formData = new FormData();
-      formData.append('file', selectedFile);
+      formData.append("file", selectedFile);
       const response = await postCSVData(formData);
-      if (response.status === 200){
-        toast.success('Successfully Generated Report! Redirecting you now.')
+      if (response.status === 200) {
+        toast.success("Successfully Generated Report! Redirecting you now.");
+        setIsPosting(false)
         await new Promise((resolve) => setTimeout(resolve, 1000));
-        router.push(`/report/${response.data.reportID}/`)
+        router.push(`/report/${response.data.reportID}/`);
       }
     } else {
       toast.error("Please upload a file before proceeding.");
     }
+    setIsPosting(false)
   };
 
   return (
@@ -91,7 +96,7 @@ export default function Home() {
           >
             {selectedFile ? (
               <>
-                <FileRightIcon height={100} width={100}/>
+                <FileRightIcon height={100} width={100} />
                 <p className="text-lg font-bold">{selectedFile.name}</p>
               </>
             ) : (
@@ -116,11 +121,17 @@ export default function Home() {
           </div>
           <div className="w-full flex justify-end">
             <Button
-              className={cn("bg-sky-500 hover:bg-sky-300 hover:text-gray-100 text-white" , !selectedFile && "opacity-50")}
+              className={cn(
+                "bg-sky-500 hover:bg-sky-300 hover:text-gray-100 text-white",
+                !selectedFile && "opacity-50",
+              )}
               onClick={handleNext}
               disabled={!selectedFile}
             >
-              Next
+              {isPosting ?
+              <div className="animate-spin">
+                <LoadIcon />
+              </div>: "Next"}
             </Button>
           </div>
         </div>
